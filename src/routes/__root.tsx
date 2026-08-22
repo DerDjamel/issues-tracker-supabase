@@ -1,4 +1,10 @@
-import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
+import {
+  HeadContent,
+  Link,
+  Outlet,
+  Scripts,
+  createRootRoute,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 
@@ -26,7 +32,39 @@ export const Route = createRootRoute({
     ],
   }),
   shellComponent: RootDocument,
+  component: () => (
+    <>
+      <Header />
+      <Outlet />
+    </>
+  ),
 });
+
+function Header() {
+  const user = Route.useRouteContext({
+    select: (context) => (context as { user?: { email?: string } }).user,
+  });
+  return (
+    <header className="flex items-center justify-between border-b px-6 py-4">
+      <Link to="/" className="font-semibold">
+        Issues tracker
+      </Link>
+      <nav className="flex items-center gap-4 text-sm">
+        {user ? (
+          <>
+            <span>{user.email}</span>
+            <Link to="/logout">Log out</Link>
+          </>
+        ) : (
+          <>
+            <Link to="/login">Log in</Link>
+            <Link to="/signup">Sign up</Link>
+          </>
+        )}
+      </nav>
+    </header>
+  );
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
@@ -35,7 +73,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        {children}
+        <main className="container">{children}</main>
         <TanStackDevtools
           config={{
             position: "bottom-right",

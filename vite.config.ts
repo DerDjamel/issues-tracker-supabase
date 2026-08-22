@@ -13,7 +13,7 @@ const config = defineConfig({
     devtools(),
     nitro({ rollupConfig: { external: [/^@sentry\//] } }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({ start: { entry: "src/start.ts" } }),
     viteReact(),
   ],
 });
